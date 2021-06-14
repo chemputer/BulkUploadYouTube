@@ -1,6 +1,6 @@
 from wowspy import Wows
 from pprint import pp
-from config import apikey, NA_ClanID
+from config import apikey, NA_ClanID, NA_NCTA_ClanID, RU_ClanID, EU_ClanID, ASIA_ClanID
 from datetime import datetime, timedelta
 
 api_key = apikey

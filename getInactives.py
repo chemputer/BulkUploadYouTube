@@ -41,7 +41,7 @@ def main():
     print(f'\nMembers over 14 days since LBT:\n')
     for member in overFourteen:
         print(f'{member}\n')
-    print(f'\n Rest of the clan, not inactive:\n')
+    #print(f'\n Rest of the clan, not inactive:\n')
     #print(clan_members)
 
 

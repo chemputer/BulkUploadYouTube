@@ -4,3 +4,7 @@ config.py
 test.csv
 __pycache__
 **pycache**
+.env
+*.ipynb
+demo-bot.py
+**.ipynb_checkpoints**/**

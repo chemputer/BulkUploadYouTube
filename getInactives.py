@@ -2,9 +2,15 @@ from wowspy import Wows
 from pprint import pp
 from config import apikey, NA_ClanID
 from datetime import datetime, timedelta
+
 api_key = apikey
 my_api=Wows(api_key)
-NA_Clan_ID = NA_ClanID
+
+#change this to EU_ClanID, ASIA_ClanID, or RU_ClanID.
+Clan_ID = NA_ClanID
+
+# change your region by changing the end to EU or Asia or RU.
+region = my_api.region.NA
 fiveDaysAgo = datetime.now() - timedelta(days = 5)
 fourteenDaysAgo = datetime.now() - timedelta(days = 14)
 
@@ -14,11 +20,11 @@ def unixToUTC(unixTime):
     return final_utc_time
 
 def main():
-    clan_members = my_api.clan_details(my_api.region.NA,NA_Clan_ID)["data"][str(NA_Clan_ID)]['members_ids']
+    clan_members = my_api.clan_details(region,Clan_ID)["data"][str(Clan_ID)]['members_ids']
     overFive = []
     overFourteen = []
     for member_id in clan_members:
-        stats = my_api.player_personal_data(my_api.region.NA,member_id,fields='last_battle_time,nickname')
+        stats = my_api.player_personal_data(region,member_id,fields='last_battle_time,nickname')
         lbt_unix = int(stats["data"][f'{member_id}']["last_battle_time"])
         nickname = stats["data"][f'{member_id}']["nickname"]
         lbt_utc = unixToUTC(lbt_unix)
@@ -35,7 +41,8 @@ def main():
     print(f'\nMembers over 14 days since LBT:\n')
     for member in overFourteen:
         print(f'{member}\n')
-    #print(clan_members)
+    print(f'\n Rest of the clan, not inactive:\n')
+    print(clan_members)
 
 
 

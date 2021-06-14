@@ -42,7 +42,7 @@ def main():
     for member in overFourteen:
         print(f'{member}\n')
     print(f'\n Rest of the clan, not inactive:\n')
-    print(clan_members)
+    #print(clan_members)
 
 
 

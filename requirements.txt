@@ -2,3 +2,5 @@ wowspy
 wargaming
 datetime
 prettyprint
+requests
+discord_webhooks

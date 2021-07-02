@@ -78,49 +78,16 @@ def getStringInactives(r, c):
         tna14 += f'{m}\n'
     total = tna5 + tna14
     return total
-  
-#def main():
- 
-    # webhook = DiscordWebhooks(WEBHOOKURL)
-
-    # webhook.set_content(title='Inactive Game Acounts', description='Shows a listing of the inactive game accounts for each region', \
-    # color=0xF58CBA, timestamp=f'{(datetime.now()).strftime("%Y-%m-%d %H:%M:%S(UTC)")}')
-
-    # # Attaches an author
-    # webhook.set_author(name='InactivityChecker')
-
-    # NA_NCOTS = getInactives(NA,NA_C)
-    # NA_NCTA = getInactives(NA,NA2_C)
-    # EU_NCOTS = getInactives(EU,EU_C)
-    # ASIA_NCOTS = getInactives(ASIA,ASIA_C)
-    # RU_NCOTS = getInactives(RU,RU_C)
-    # pp(f'NA: \n {NA_NCOTS} \n')
-    # pp(f'NA NCTA: \n {NA_NCTA} \n')
-    # pp(f'EU NCOTS: \n {EU_NCOTS} \n')
-    # pp(f'ASIA NCOTS: \n {ASIA_NCOTS} \n')
-    # pp(f'RU NCOTS: \n {RU_NCOTS} \n')
-
-    # webhook.add_field(name='NA NCOTS', value=f'{getStringInactives(NA,NA_C)}')
-    # webhook.add_field(name='NA NCTA', value=f'{getStringInactives(NA,NA2_C)}')
-    # webhook.add_field(name='EU NCOTS', value=f'{getStringInactives(EU,EU_C)}')
-    # webhook.add_field(name='ASIA NCOTS', value=f'{getStringInactives(ASIA,ASIA_C)}')
-    # webhook.add_field(name='RU NCOTS', value=f'{getStringInactives(RU,RU_C)}') 
-
-    # webhook.add_field(name='NA NCOTS', value=f'{NA_NCOTS}')
-    # webhook.add_field(name='NA NCTA', value=f'{NA_NCTA}')
-    # webhook.add_field(name='EU NCOTS', value=f'{EU_NCOTS}')
-    # webhook.add_field(name='ASIA NCOTS', value=f'{ASIA_NCOTS}')
-    # webhook.add_field(name='RU NCOTS', value=f'{RU_NCOTS}')
-
-    # webhook.send()
-
 
 def main():
     
     url = DiscordWebhookURL
 #for all params, see https://discordapp.com/developers/docs/resources/webhook#execute-webhook
+    
+    # change the name here, as well as for each of the embeds below. The pp() statements simply show up on the terminal output, so if using discord webhook,
+    # it's unnecessary.
     data = {
-        "content" : "Inactivity Report for Each NCOTS Server",
+        "content" : "Inactivity Report for Each NCOTS Port",
         "username" : "Inactivity Checker"
     }
     NA_NCOTS = getInactives(NA,NA_C)
@@ -129,6 +96,8 @@ def main():
     ASIA_NCOTS = getInactives(ASIA,ASIA_C)
     ASIA2_NCOTS = getInactives(ASIA,ASIA2_C)
     RU_NCOTS = getInactives(RU,RU_C)
+    
+    # using pretty print to format this neatly when it outputs to console. Be sure to change the clan names as appropriate.
     pp(f'NA: \n {NA_NCOTS} \n')
     pp(f'NA NCTA: \n {NA_NCTA} \n')
     pp(f'EU NCOTS: \n {EU_NCOTS} \n')
@@ -138,6 +107,8 @@ def main():
 #leave this out if you dont want an embed
 #for all params, see https://discordapp.com/developers/docs/resources/channel#embed-object
     data["embeds"] = [
+        # each dict (the {key:pair, key:pair} portions) consitutes its own embed.
+        
         {
             "description" : f'```{NA_NCOTS}```',
             "title" : "NA NCOTS"

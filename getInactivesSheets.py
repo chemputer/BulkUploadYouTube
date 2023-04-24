@@ -197,7 +197,7 @@ def sheets():
     wks.clear("*")
     wks.update_col(1,nicks2)
     print("nicks 60+ done")
-    wks.update_col(2,ports1)
+    wks.update_col(2,ports2)
     print ("port 30+ done")
     wks.update_col(3,days_lbt2)
     print("lbt_days 60+ done")

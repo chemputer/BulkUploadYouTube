@@ -188,7 +188,7 @@ def sheets():
     wks.update_col(5,links1)
     print("30+ done")
     wks.frozen_rows=1
-    wks.sort_range((1,1),(10,150),2,"DESCENDING")
+    wks.sort_range((1,1),(150,150),2,"DESCENDING")
     # switch to sheet two
     wks=sh[1]
     # index to A1
@@ -206,7 +206,7 @@ def sheets():
     wks.update_col(5,links2)
     print("Completely done")
     wks.frozen_rows=1
-    wks.sort_range((1,1),(10,150),2,"DESCENDING")
+    wks.sort_range((1,1),(150,150),2,"DESCENDING")
 def main():
     sheets()
 if __name__ == '__main__':

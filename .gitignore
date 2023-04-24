@@ -8,3 +8,9 @@ __pycache__
 *.ipynb
 demo-bot.py
 **.ipynb_checkpoints**/**
+key.json
+oath.json
+key.json.old
+sheets.googleapis.com-python.json
+package.json
+.ipynb_checkpoints/

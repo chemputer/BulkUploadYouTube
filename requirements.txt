@@ -4,3 +4,5 @@ datetime
 prettyprint
 requests
 discord_webhooks
+pygsheets
+pandas

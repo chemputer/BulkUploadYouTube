@@ -1,17 +1,19 @@
 from wowspy import Wows
 from pprint import pp
-from config import apikey,AOD_A,AOD_B,AOD_C,AOD_D,AOD_EU,AOD_CZ_EU,OAUTH_KEY
+# config file
+from config import APIKEY,AOD_A,AOD_B,AOD_C,AOD_D,AOD_EU,AOD_CZ_EU,EXCLUDED_USERS,OAUTH_KEY_LOCATION
 from datetime import datetime, timedelta
-import requests
-from discord_webhooks import DiscordWebhooks
+# google sheets stuff
 import pygsheets
 import pandas as pd
 
-gc = pygsheets.authorize(client_secret='E:\\Projects\\Repos\\PyWoWSStats\\oauth.json')
-api_key = apikey
-my_api=Wows(api_key)
-webhook_url = DiscordWebhookURL
-# change your region by changing the end to EU or Asia or RU.
+# authenticate!
+gc = pygsheets.authorize(client_secret=OAUTH_KEY_LOCATION)
+#gc = pygsheets.authorize(client_secret=OAUTH_KEY)
+
+my_api=Wows(APIKEY)
+
+# just putting all the regions even though we only use NA and EU.
 NA = my_api.region.NA
 EU = my_api.region.EU
 ASIA = my_api.region.AS
@@ -21,14 +23,14 @@ RU = my_api.region.RU
 # Create empty dataframe
 df = pd.DataFrame()
 # Open the sheet named Inactivity
-sh=gc.open('Inactivity')
+sh=gc.open('AOD WoWS Port Inactivity')
 # go to sheet 1
 wks=sh[0]
 # index to A1
 wks.set_dataframe(df,(0,0))
 
 # exclude the following users, i.e. officers alt accounts and such.
-excludeUsers = ["AODGLAD1980E","AOD_StyrgisE_1","ZiggyInTheSea","AOD_StyrgisC_1","NotYouZiggy","Gladiator1980c","AOD_Styrgis","Gladiator1980d","aodstud","SabreSixFour","gladiator1980a"]
+excludeUsers = EXCLUDED_USERS
 
 # silly math stuff to get date 30 and 60 days ago
 thirtyDaysAgo = datetime.now() - timedelta(days = 30)
@@ -37,9 +39,11 @@ sixtyDaysAgo = datetime.now() - timedelta(days = 60)
 # create lists for 30 day and 60 day Nicknames, Profile Links, Days since Last Battle, and Date of Last Battle
 nicks1 = ["Nickname"]
 links1 = ["Profile Link"]
+ports1 = ["Port"]
 days_lbt1 = ["Days Since Last Battle"]
 lbt_time1 = ["Date of Last Battle"]
 nicks2 = ["Nickname"]
+ports2 = ["Ports"]
 links2 = ["Profile Link"]
 days_lbt2 = ["Days Since Last Battle"]
 lbt_time2 = ["Date of Last Battle"]
@@ -49,6 +53,22 @@ def unixToUTC(unixTime):
     utc_time = datetime.utcfromtimestamp(unixTime)
     final_utc_time = utc_time #.strftime("%Y-%m-%d %H:%M:%S.%f+00:00 (UTC)")
     return final_utc_time
+
+def getClanID(CID):
+    if CID == AOD_A:
+        return "AOD_A"
+    elif CID == AOD_B:
+        return "AOD_B"
+    elif CID == AOD_C:
+        return "AOD_C"
+    elif CID == AOD_D:
+        return "AOD_D"
+    elif CID == AOD_EU:
+        return "AOD (EU)"
+    elif CID == AOD_CZ_EU:
+        return "AODCZ (EU)"
+    else:
+        return "Uh, WTF? ERROR."
 
 # actually do the work with the Wargaming API
 def getInactives(region, Clan_ID):
@@ -74,7 +94,10 @@ def getInactives(region, Clan_ID):
         lbt_utc_str = lbt_utc.strftime("%Y-%m-%d %H:%M:%S (UTC)")
         days_since_lbt = datetime.now() - lbt_utc
         
-        if lbt_utc < thirtyDaysAgo and lbt_utc > sixtyDaysAgo:
+        if lbt_utc < thirtyDaysAgo and lbt_utc >= sixtyDaysAgo:
+            ports1.append(getClanID(Clan_ID))
+            # get nickname
+            nicks1.append(nickname)
             # NA links
             if region == NA:
                 links1.append(("https://profile.worldofwarships.com/statistics/"+str(member_id)))
@@ -85,6 +108,10 @@ def getInactives(region, Clan_ID):
             days_lbt1.append(str(days_since_lbt.days))
             overThirty.append(f"{nickname} was last on {lbt_utc_str}, {days_since_lbt.days} days ago")
         if lbt_utc < sixtyDaysAgo:
+            # get nickname
+            nicks2.append(nickname)
+            ports2.append(getClanID(Clan_ID))
+
             # link if NA
             if region == NA:
                 links2.append(("https://profile.worldofwarships.com/statistics/"+str(member_id)))
@@ -127,107 +154,61 @@ def getStringInactives(r, c):
     total = na30 + na60
     return total
 
-def main():
-    #call the API for each port
-    getInactives(NA,AOD_A)
-    getInactives(NA,AOD_B)
-    getInactives(NA,AOD_C)
-    getInactives(NA,AOD_D)
-    # EU is included too!
-    getInactives(EU,AOD_EU)
-    getInactives(EU,AOD_CZ_EU)
+#call the API for each port
+print("AOD_A Done")
+getInactives(NA,AOD_B)
+print("AOD_B Done")
+getInactives(NA,AOD_C)
+print("AOD_C Done")
+getInactives(NA,AOD_D)
+print("AOD_D Done")
+# EU is included too!
+getInactives(EU,AOD_EU)
+print("AOD (EU) Done")
+getInactives(EU,AOD_CZ_EU)
+print("AODCZ (EU) Done")
+print("All Port WG API calls finished")
+
+def sheets():
+    print("Starting Google API calls...")
     #sheet 1
     wks=sh[0]
     # index to A1
     wks.set_dataframe(df,(0,0))
     # clear all entries
-    sh.clear("*")
+    wks.clear("*")
     wks.update_col(1,nicks1)
     print("nicks 30+ done")
-    wks.update_col(2,days_lbt1)
+    wks.update_col(2,ports1)
+    print ("port 30+ done")
+    wks.update_col(3,days_lbt1)
     print("lbt_days 30+ done")
-    wks.update_col(3,lbt_time1)
+    wks.update_col(4,lbt_time1)
     print("lbt_time 30+ done")
-    wks.update_col(4,links1)
+    wks.update_col(5,links1)
     print("30+ done")
+    wks.frozen_rows=1
+    wks.sort_range((1,1),(10,150),2,"DESCENDING")
     # switch to sheet two
     wks=sh[1]
     # index to A1
     wks.set_dataframe(df,(0,0))
     # clear all entries
-    sh.clear("*")
+    wks.clear("*")
     wks.update_col(1,nicks2)
     print("nicks 60+ done")
-    wks.update_col(2,days_lbt2)
+    wks.update_col(2,ports1)
+    print ("port 30+ done")
+    wks.update_col(3,days_lbt2)
     print("lbt_days 60+ done")
-    wks.update_col(3,lbt_time2)
+    wks.update_col(4,lbt_time2)
     print("lbt_time 60+ done")
-    wks.update_col(4,links2)
+    wks.update_col(5,links2)
     print("Completely done")
-
-#     url = 'https://discord.com/api/webhooks/1100054997959463063/8bnlNAyJ0M6JX4zb-6HM-6NHuTuHG8QtlZc9MjSaMtu3B-pfHAJT1vTcpVAopSHTeAYq'
-# #for all params, see https://discordapp.com/developers/docs/resources/webhook#execute-webhook
-    
-#     # change the name here, as well as for each of the embeds below. The pp() statements simply show up on the terminal output, so if using discord webhook,
-#     # it's unnecessary.
-#     data = {
-#         "content" : "Inactivity Report for Each AOD Port",
-#         "username" : "Inactivity Checker"
-#     }
-#     NA_AOD_A = getInactives(NA,AOD_A)
-#     NA_AOD_B = getInactives(NA,AOD_B)
-#     NA_AOD_C = getInactives(NA,AOD_C)
-#     NA_AOD_D = getInactives(NA,AOD_D)
-#     EU_AOD = getInactives(EU,AOD_EU)
-#     EU_AODCZ = getInactives(EU,AOD_CZ_EU)
-    
-#     # using pretty print to format this neatly when it outputs to console. Be sure to change the clan names as appropriate.
-#     pp(f'AOD_A: \n {NA_AOD_A} \n')
-#     pp(f'AOD_B: \n {NA_AOD_B} \n')
-#     pp(f'AOD_C: \n {NA_AOD_C} \n')
-#     pp(f'AOD_D: \n {NA_AOD_D} \n')
-#     pp(f'AOD (EU): \n {EU_AOD} \n')
-#     pp(f'AOD_CZ (EU): \n {EU_AODCZ} \n')
-# #leave this out if you dont want an embed
-# #for all params, see https://discordapp.com/developers/docs/resources/channel#embed-object
-#     data["embeds"] = [
-#         # each dict (the {key:pair, key:pair} portions) consitutes its own embed.
-        
-#         {
-#             "description" : f'```{NA_AOD_A}```',
-#             "title" : "AOD_A"
-#         },
-#         {
-#             "description" : f'```{NA_AOD_B}```',
-#             "title" : "AOD_B"
-#         },
-#         {
-#             "description" : f'```{NA_AOD_C}```',
-#             "title" : "AOD_C"
-#         },
-#         {
-#             "description" : f'```{NA_AOD_D}```',
-#             "title" : "AOD_D"
-#         },
-#         {
-#             "description" : f'```{EU_AOD}```',
-#             "title" : "AOD (EU)"
-#         },
-#         {
-#             "description" : f'```{EU_AODCZ}```',
-#             "title" : "AODCZ (EU)"
-#         }
-#     ]
-
-#     result = requests.post(url, json = data)
-
-#     try:
-#         result.raise_for_status()
-#     except requests.exceptions.HTTPError as err:
-#         print(err)
-#     else:
-#         print("Payload delivered successfully, code {}.".format(result.status_code))
-
+    wks.frozen_rows=1
+    wks.sort_range((1,1),(10,150),2,"DESCENDING")
+def main():
+    sheets()
 if __name__ == '__main__':
     main()  
 

@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 from wowspy import Wows
 from pprint import pp
 from sys import argv
@@ -47,7 +48,7 @@ def getInactives(region, Clan_ID):
         if nickname in excludeUsers:
             continue
         lbt_utc = unixToUTC(lbt_unix)
-        lbt_utc_str = lbt_utc.strftime("%Y-%m-%d %H:%M:%S (UTC)")
+        lbt_utc_str = lbt_utc.strftime("%Y-%m-%d (UTC)")
         days_since_lbt = datetime.now() - lbt_utc
 
         if lbt_utc < thirtyDaysAgo and lbt_utc >= sixtyDaysAgo:

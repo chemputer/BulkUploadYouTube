@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 from wowspy import Wows
 from pprint import pp
 # config file
@@ -8,10 +10,13 @@ import pygsheets
 import pandas as pd
 # health check stuff
 import requests
+
+
 # authenticate!
 gc = pygsheets.authorize(client_secret=OAUTH_KEY_LOCATION)
 #gc = pygsheets.authorize(client_secret=OAUTH_KEY)
 
+# create an instance of the WoWS API with my API Key
 my_api=Wows(APIKEY)
 
 # just putting all the regions even though we only use NA and EU.
@@ -21,11 +26,11 @@ ASIA = my_api.region.AS
 RU = my_api.region.RU 
 
 
-# Create empty dataframe
+# Create empty dataframe using panda
 df = pd.DataFrame()
-# Open the sheet named Inactivity
+# Open the sheet by name
 sh=gc.open('AOD WoWS Port Inactivity')
-# go to sheet 1
+# go to page 1
 wks=sh[0]
 # index to A1
 wks.set_dataframe(df,(0,0))
@@ -55,6 +60,7 @@ def unixToUTC(unixTime):
     final_utc_time = utc_time #.strftime("%Y-%m-%d %H:%M:%S.%f+00:00 (UTC)")
     return final_utc_time
 
+# use the clan ID to return the clan name as a string (reverse lookup, essentially)
 def getClanID(CID):
     if CID == AOD_A:
         return "AOD_A"
@@ -73,10 +79,16 @@ def getClanID(CID):
 
 # actually do the work with the Wargaming API
 def getInactives(region, Clan_ID):
+    # get the clan member's ID's for the given port
     clan_members = my_api.clan_details(region,Clan_ID)['data'][str(Clan_ID)]['members_ids']
     #print(clan_members)
+
+    # create lists for members that are exceeding 30 days and 60 days, respectively.
     overThirty = []
     overSixty = []
+
+    # check each member in each port, grab their nickname, and last battle time to be able to compile a list of 
+    # usernames + days since last battle
     for member_id in clan_members:
         stats = my_api.player_personal_data(region,member_id,fields='last_battle_time,nickname')
         #print(stats)
@@ -84,17 +96,21 @@ def getInactives(region, Clan_ID):
         #print(lbt)
         lbt_unix = int(lbt)
         nickname = stats['data'][f'{member_id}']['nickname']
+        # if the nickname is one of the excluded users, just skip them. This is reserved for officer's alt accounts primarily.
         if nickname in excludeUsers:
             continue
-        # nicks.append(nickname)
-        # if region == NA:
-        #     links.append(("https://profile.worldofwarships.com/statistics/"+str(member_id)))
-        # if region == EU:
-        #     links.append(("https://profile.worldofwarships.eu/statistics/"+str(member_id)))
+        
+        # do a bunch of confusing stuff with time
+
+        # WG gives us the LBT in unix time, so change that to a datetime in UTC.
         lbt_utc = unixToUTC(lbt_unix)
-        lbt_utc_str = lbt_utc.strftime("%Y-%m-%d %H:%M:%S (UTC)")
+        # make that datetime object a string we can work with and read in a specific format.
+        lbt_utc_str = lbt_utc.strftime("%Y-%m-%d (UTC)")
+
+        # do the math to see how many days it's been since the last battle and now.
         days_since_lbt = datetime.now() - lbt_utc
         
+        # if it's over 30 days but less than or equal to 60 days, then put them on the 30day list.
         if lbt_utc < thirtyDaysAgo and lbt_utc >= sixtyDaysAgo:
             ports1.append(getClanID(Clan_ID))
             # get nickname
@@ -108,6 +124,8 @@ def getInactives(region, Clan_ID):
             lbt_time1.append(str(lbt_utc_str))
             days_lbt1.append(str(days_since_lbt.days))
             overThirty.append(f"{nickname} was last on {lbt_utc_str}, {days_since_lbt.days} days ago")
+        
+        # if it's over 60 days then put them in the over 60 day list.
         if lbt_utc < sixtyDaysAgo:
             # get nickname
             nicks2.append(nickname)
@@ -128,16 +146,16 @@ def getInactives(region, Clan_ID):
     o60 = ""
     # priinting members to console if over 30 and over 60.
     if (len(overThirty) > 0):
-        print(f'\nMembers over 30 days since LBT:\n\n')
+        #print(f'\nMembers over 30 days since LBT:\n\n')
         o30 += f'Members over 30 days since LBT:\n\n'
     for member in overThirty:
-        print(f'{member}\n')
+        #print(f'{member}\n')
         o30 += f'{member}\n'
     if(len(overSixty) > 0):
-        print(f'\nMembers over 60 days since LBT:\n\n')
+        #print(f'\nMembers over 60 days since LBT:\n\n')
         o60 += f'\nMembers over 60 days since LBT:\n\n'
     for member in overSixty:
-        print(f'{member}\n')
+        #print(f'{member}\n')
         o60 += f'{member}\n'
     tot = o30 + o60
     return tot

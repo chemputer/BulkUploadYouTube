@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 from wowspy import Wows
 from pprint import pp
 # config file
@@ -95,7 +96,7 @@ def getInactives(region, Clan_ID):
         # if region == EU:
         #     links.append(("https://profile.worldofwarships.eu/statistics/"+str(member_id)))
         lbt_utc = unixToUTC(lbt_unix)
-        lbt_utc_str = lbt_utc.strftime("%Y-%m-%d %H:%M:%S (UTC)")
+        lbt_utc_str = lbt_utc.strftime("%Y-%m-%d (UTC)")
         days_since_lbt = datetime.now() - lbt_utc
         
         if lbt_utc < thirtyDaysAgo and lbt_utc >= sixtyDaysAgo:
@@ -113,7 +114,7 @@ def getInactives(region, Clan_ID):
                 links1.append(link)
             lbt_time1.append(str(lbt_utc_str))
             days_lbt1.append(str(days_since_lbt.days))
-            overThirty.append(f"{nickname} last played on {lbt_utc_str}: {days_since_lbt.days} days ago\n{link}")
+            overThirty.append(f"{nickname} last played {days_since_lbt.days} days ago, on {lbt_utc_str}\n profile link: {link}")
         if lbt_utc < sixtyDaysAgo:
             # get nickname
             ports2.append(getClanID(Clan_ID))
@@ -126,7 +127,7 @@ def getInactives(region, Clan_ID):
                 links2.append(("https://profile.worldofwarships.eu/statistics/"+str(member_id)))
             lbt_time2.append(str(lbt_utc_str))
             days_lbt2.append(str(days_since_lbt.days))
-            overSixty.append(f"{nickname}] last played on {lbt_utc_str}, {days_since_lbt.days} days ago (test)[{link}]")
+            overSixty.append(f"{nickname} last played {days_since_lbt.days} days ago, on {lbt_utc_str}\n profile link: {link}")
             #print(f'{nickname} last battle was on {lbt_utc}')
         #return overThirty,overSixty
     o30 = ""

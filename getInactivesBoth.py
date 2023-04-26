@@ -268,9 +268,27 @@ def webhook():
         print(err)
     else:
         print("Payload delivered successfully, code {}.".format(result.status_code))
+def healthCheckStart():
+
+    try:
+        requests.get("https://hc-ping.com/2ca93c6f-dac7-4656-85ce-f93c37c3870a/start", timeout=10)
+    except requests.RequestException as e:
+        # Log ping failure here...
+        print("Ping failed: %s" % e)
+
+def healthCheck():
+
+    try:
+        requests.get("https://hc-ping.com/2ca93c6f-dac7-4656-85ce-f93c37c3870a", timeout=10)
+    except requests.RequestException as e:
+        # Log ping failure here...
+        print("Ping failed: %s" % e)
 
 def main():
+    healthCheckStart()
     sheets()
+    webhook()
+    healthCheck()
 if __name__ == '__main__':
     main()  
 

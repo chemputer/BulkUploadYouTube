@@ -1,11 +1,18 @@
 from wowspy import Wows
 from pprint import pp
+from sys import argv
+import argparse
 from config import APIKEY,AOD_A,AOD_B,AOD_C,AOD_D,AOD_EU,AOD_CZ_EU,DISCORD_WEBHOOK_URL,EXCLUDED_USERS
 from datetime import datetime, timedelta
 import requests
-from discord_webhooks import DiscordWebhooks
 
-
+parser = argparse.ArgumentParser()
+parser.add_argument("-d","--debug", action="store_true")
+args = parser.parse_args()
+if args.debug:
+    print("debug worked!")
+elif args.debug == False:
+    print("debug failed!")
 my_api=Wows(APIKEY)
 # change your region by changing the end to EU or Asia or RU.
 NA = my_api.region.NA
@@ -49,30 +56,30 @@ def getInactives(region, Clan_ID):
             # make sure if they're EU the link actually freaking works    
             if region == EU:
                 link=("https://profile.worldofwarships.eu/statistics/"+str(member_id))
-            overThirty.append(f"{nickname} last played on {lbt_utc_str}, {days_since_lbt.days} days ago")
+            overThirty.append(f"{nickname} last played {days_since_lbt.days} days ago, on {lbt_utc_str}\n profile link: {link}")
         if lbt_utc < sixtyDaysAgo:
             if region == NA:
                 link=("https://profile.worldofwarships.com/statistics/"+str(member_id))
             # make sure if they're EU the link actually freaking works    
             if region == EU:
                 link=("https://profile.worldofwarships.eu/statistics/"+str(member_id))
-            overSixty.append(f"{nickname} last played on {lbt_utc_str}, {days_since_lbt.days} days ago")
+            overSixty.append(f"{nickname} last played {days_since_lbt.days} days ago, on {lbt_utc_str}\n profile link: {link}")
 
             #print(f'{nickname} last battle was on {lbt_utc}')
         #return overThirty,overSixty
     o30 = ""
     o60 = ""
     if (len(overThirty) > 0):
-        print(f'\nMembers over 30 days since LBT:\n\n')
+        #print(f'\nMembers over 30 days since LBT:\n\n')
         o30 += f'Members over 30 days since LBT:\n\n'
     for member in overThirty:
-        print(f'{member}\n')
+       # print(f'{member}\n')
         o30 += f'{member}\n'
     if(len(overSixty) > 0):
-        print(f'\nMembers over 60 days since LBT:\n\n')
+        #print(f'\nMembers over 60 days since LBT:\n\n')
         o60 += f'\nMembers over 60 days since LBT:\n\n'
     for member in overSixty:
-        print(f'{member}\n')
+        #print(f'{member}\n')
         o60 += f'{member}\n'
     tot = o30 + o60
     return tot
@@ -170,8 +177,9 @@ def webhook():
         print("Payload delivered successfully, code {}.".format(result.status_code))
 
 def main():
-    printInactives()
     webhook()
 if __name__ == '__main__':
-    main()  
+    #main()
+    if args.debug:
+        printInactives()
 

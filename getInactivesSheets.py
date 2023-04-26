@@ -6,7 +6,8 @@ from datetime import datetime, timedelta
 # google sheets stuff
 import pygsheets
 import pandas as pd
-
+# health check stuff
+import requests
 # authenticate!
 gc = pygsheets.authorize(client_secret=OAUTH_KEY_LOCATION)
 #gc = pygsheets.authorize(client_secret=OAUTH_KEY)
@@ -207,8 +208,27 @@ def sheets():
     print("Completely done")
     wks.frozen_rows=1
     wks.sort_range((1,1),(150,150),2,"DESCENDING")
+
+def healthCheckStart():
+
+    try:
+        requests.get("https://hc-ping.com/2ca93c6f-dac7-4656-85ce-f93c37c3870a/start", timeout=10)
+    except requests.RequestException as e:
+        # Log ping failure here...
+        print("Ping failed: %s" % e)
+
+def healthCheck():
+
+    try:
+        requests.get("https://hc-ping.com/2ca93c6f-dac7-4656-85ce-f93c37c3870a", timeout=10)
+    except requests.RequestException as e:
+        # Log ping failure here...
+        print("Ping failed: %s" % e)
+
 def main():
+    healthCheckStart()
     sheets()
+    healthCheck()
 if __name__ == '__main__':
     main()  
 

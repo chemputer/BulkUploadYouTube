@@ -45,7 +45,7 @@ sixtyDaysAgo = datetime.now() - timedelta(days = 60)
 nicks1 = ["Nickname"]
 links1 = ["Profile Link"]
 ports1 = ["Port"]
-times = []
+times = ["Last Updated:" + str(datetime.now().strftime("%Y-%m-%d (UTC)"))]
 days_lbt1 = ["Days Since Last Battle"]
 lbt_time1 = ["Date of Last Battle"]
 nicks2 = ["Nickname"]
@@ -99,8 +99,6 @@ def getInactives(region, Clan_ID):
         lbt_utc = unixToUTC(lbt_unix)
         lbt_utc_str = lbt_utc.strftime("%Y-%m-%d (UTC)")
         days_since_lbt = datetime.now() - lbt_utc
-        times = [datetime.now().strftime("%Y-%m-%d (UTC)")]
-
         if lbt_utc < thirtyDaysAgo and lbt_utc >= sixtyDaysAgo:
             # get nickname
             nicks1.append(nickname)

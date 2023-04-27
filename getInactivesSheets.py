@@ -46,7 +46,7 @@ sixtyDaysAgo = datetime.now() - timedelta(days = 60)
 nicks1 = ["Nickname"]
 links1 = ["Profile Link"]
 ports1 = ["Port"]
-times = []
+times = [str(datetime.now().strftime("%Y-%m-%d (UTC)"))]
 days_lbt1 = ["Days Since Last Battle"]
 lbt_time1 = ["Date of Last Battle"]
 nicks2 = ["Nickname"]
@@ -107,7 +107,6 @@ def getInactives(region, Clan_ID):
         lbt_utc = unixToUTC(lbt_unix)
         # make that datetime object a string we can work with and read in a specific format.
         lbt_utc_str = lbt_utc.strftime("%Y-%m-%d (UTC)")
-        times = [datetime.now().strftime("%Y-%m-%d (UTC)")]
         # do the math to see how many days it's been since the last battle and now.
         days_since_lbt = datetime.now() - lbt_utc
         

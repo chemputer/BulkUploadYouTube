@@ -45,6 +45,7 @@ sixtyDaysAgo = datetime.now() - timedelta(days = 60)
 nicks1 = ["Nickname"]
 links1 = ["Profile Link"]
 ports1 = ["Port"]
+times = []
 days_lbt1 = ["Days Since Last Battle"]
 lbt_time1 = ["Date of Last Battle"]
 nicks2 = ["Nickname"]
@@ -98,7 +99,8 @@ def getInactives(region, Clan_ID):
         lbt_utc = unixToUTC(lbt_unix)
         lbt_utc_str = lbt_utc.strftime("%Y-%m-%d (UTC)")
         days_since_lbt = datetime.now() - lbt_utc
-        
+        times = [datetime.now().strftime("%Y-%m-%d (UTC)")]
+
         if lbt_utc < thirtyDaysAgo and lbt_utc >= sixtyDaysAgo:
             # get nickname
             nicks1.append(nickname)
@@ -194,6 +196,9 @@ def sheets():
     wks.update_col(4,lbt_time1)
     print("lbt_time 30+ done")
     wks.update_col(5,links1)
+    print("links 30+ done")
+    wks.update_col(6,times)
+    print("time 30+ updated")
     print("30+ done")
     wks.frozen_rows=1
     wks.sort_range((1,1),(150,150),2,"DESCENDING")
@@ -212,6 +217,8 @@ def sheets():
     wks.update_col(4,lbt_time2)
     print("lbt_time 60+ done")
     wks.update_col(5,links2)
+    print("links 60+ done")
+    wks.update_col(6,times)
     print("Completely done")
     wks.frozen_rows=1
     wks.sort_range((1,1),(150,150),2,"DESCENDING")

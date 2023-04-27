@@ -46,7 +46,7 @@ sixtyDaysAgo = datetime.now() - timedelta(days = 60)
 nicks1 = ["Nickname"]
 links1 = ["Profile Link"]
 ports1 = ["Port"]
-times = [str(datetime.now().strftime("%Y-%m-%d (UTC)"))]
+times = ["Last Updated:" + str(datetime.now().strftime("%Y-%m-%d (UTC)"))]
 days_lbt1 = ["Days Since Last Battle"]
 lbt_time1 = ["Date of Last Battle"]
 nicks2 = ["Nickname"]

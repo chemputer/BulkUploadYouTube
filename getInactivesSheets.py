@@ -11,7 +11,7 @@ import pandas as pd
 # health check stuff
 import requests
 
-gc = pygsheets.authorize(service_file='E:\\Projects\\Repos\\PyWoWSStats\\key.json')
+gc = pygsheets.authorize(service_file='/root/scripts/AOD/key.json')
 # authenticate!
 #gc = pygsheets.authorize(client_secret=OAUTH_KEY_LOCATION)
 #gc = pygsheets.authorize(client_secret=OAUTH_KEY)

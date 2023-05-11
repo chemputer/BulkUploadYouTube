@@ -12,7 +12,7 @@ import requests
 from discord_webhooks import DiscordWebhooks
 
 # authenticate!
-gc = pygsheets.authorize(service_file='E:\\Projects\\Repos\\PyWoWSStats\\key.json')
+gc = pygsheets.authorize(service_file='/root/scripts/AOD/key.json')
 #gc = pygsheets.authorize(client_secret=OAUTH_KEY_LOCATION)
 #gc = pygsheets.authorize(client_secret=OAUTH_KEY)
 

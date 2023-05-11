@@ -2,7 +2,7 @@
 from wowspy import Wows
 from pprint import pp
 # config file
-from config import apikey,AOD_A,AOD_B,AOD_C,AOD_D,AOD_EU,AOD_CZ_EU,DISCORD_WEBHOOK_URL,EXCLUDED_USERS,OAUTH_KEY_LOCATION
+from config import apikey,AOD_A,AOD_B,AOD_C,AOD_D,AOD_EU,AOD2,DISCORD_WEBHOOK_URL,EXCLUDED_USERS,OAUTH_KEY_LOCATION
 from datetime import datetime, timedelta
 # google sheets stuff
 import pygsheets
@@ -12,7 +12,8 @@ import requests
 from discord_webhooks import DiscordWebhooks
 
 # authenticate!
-gc = pygsheets.authorize(client_secret=OAUTH_KEY_LOCATION)
+gc = pygsheets.authorize(service_file='E:\\Projects\\Repos\\PyWoWSStats\\key.json')
+#gc = pygsheets.authorize(client_secret=OAUTH_KEY_LOCATION)
 #gc = pygsheets.authorize(client_secret=OAUTH_KEY)
 
 api_key = apikey
@@ -72,8 +73,8 @@ def getClanID(CID):
         return "AOD_D"
     elif CID == AOD_EU:
         return "AOD (EU)"
-    elif CID == AOD_CZ_EU:
-        return "AODCZ (EU)"
+    elif CID == AOD2:
+        return "A-O-D (EU)"
     else:
         return "Uh, WTF? ERROR."
     
@@ -174,8 +175,8 @@ print("AOD_D Done")
 # EU is included too!
 EU_AOD = getInactives(EU,AOD_EU)
 print("AOD (EU) Done")
-EU_AODCZ = getInactives(EU,AOD_CZ_EU)
-print("AODCZ (EU) Done")
+EU_A_O_D = getInactives(EU,AOD2)
+print("A-O-D (EU) Done")
 print("All Port WG API calls finished")
 
 def sheets():
@@ -262,8 +263,8 @@ def webhook():
             "title" : "AOD (EU)"
         },
         {
-            "description" : f'```{EU_AODCZ}```',
-            "title" : "AODCZ (EU)"
+            "description" : f'```{EU_A_O_D}```',
+            "title" : "A-O-D (EU)"
         }
     ]
 

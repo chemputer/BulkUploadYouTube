@@ -3,7 +3,7 @@ from wowspy import Wows
 from pprint import pp
 from sys import argv
 import argparse
-from config import APIKEY,AOD_A,AOD_B,AOD_C,AOD_D,AOD_EU,AOD_CZ_EU,DISCORD_WEBHOOK_URL,EXCLUDED_USERS
+from config import APIKEY,AOD_A,AOD_B,AOD_C,AOD_D,AOD_EU,AOD2,DISCORD_WEBHOOK_URL,EXCLUDED_USERS
 from datetime import datetime, timedelta
 import requests
 
@@ -110,8 +110,8 @@ print("AOD_D Done")
 # EU is included too!
 EU_AOD = getInactives(EU,AOD_EU)
 print("AOD (EU) Done")
-EU_AODCZ = getInactives(EU,AOD_CZ_EU)
-print("AODCZ (EU) Done")
+EU_A_O_D = getInactives(EU,AOD2)
+print("A-O-D (EU) Done")
 print("All Port WG API calls finished")
 
 # using pretty print to format this neatly when it outputs to console. Be sure to change the clan names as appropriate.
@@ -121,7 +121,7 @@ def printInactives():
     pp(f'AOD_C: \n {NA_AOD_C} \n')
     pp(f'AOD_D: \n {NA_AOD_D} \n')
     pp(f'AOD (EU): \n {EU_AOD} \n')
-    pp(f'AOD_CZ (EU): \n {EU_AODCZ} \n')
+    pp(f'A-O-D (EU): \n {EU_A_O_D} \n')
 
 def webhook():
     
@@ -163,8 +163,8 @@ def webhook():
             "title" : "AOD (EU)"
         },
         {
-            "description" : f'```{EU_AODCZ}```',
-            "title" : "AODCZ (EU)"
+            "description" : f'```{EU_A_O_D}```',
+            "title" : "A-O-D (EU)"
         }
     ]
 

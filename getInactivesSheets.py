@@ -3,7 +3,7 @@
 from wowspy import Wows
 from pprint import pp
 # config file
-from config import APIKEY,AOD_A,AOD_B,AOD_C,AOD_D,AOD_EU,AOD_CZ_EU,EXCLUDED_USERS,OAUTH_KEY_LOCATION
+from config import APIKEY,AOD_A,AOD_B,AOD_C,AOD_D,AOD_EU,AOD2,EXCLUDED_USERS,OAUTH_KEY_LOCATION
 from datetime import datetime, timedelta
 # google sheets stuff
 import pygsheets
@@ -11,9 +11,9 @@ import pandas as pd
 # health check stuff
 import requests
 
-
+gc = pygsheets.authorize(service_file='E:\\Projects\\Repos\\PyWoWSStats\\key.json')
 # authenticate!
-gc = pygsheets.authorize(client_secret=OAUTH_KEY_LOCATION)
+#gc = pygsheets.authorize(client_secret=OAUTH_KEY_LOCATION)
 #gc = pygsheets.authorize(client_secret=OAUTH_KEY)
 
 # create an instance of the WoWS API with my API Key
@@ -74,8 +74,8 @@ def getClanID(CID):
         return "AOD_D"
     elif CID == AOD_EU:
         return "AOD (EU)"
-    elif CID == AOD_CZ_EU:
-        return "AODCZ (EU)"
+    elif CID == AOD2:
+        return "A-O-D (EU)"
     else:
         return "Uh, WTF? ERROR."
 
@@ -185,8 +185,8 @@ print("AOD_D Done")
 # EU is included too!
 getInactives(EU,AOD_EU)
 print("AOD (EU) Done")
-getInactives(EU,AOD_CZ_EU)
-print("AODCZ (EU) Done")
+getInactives(EU,AOD2)
+print("A-O-D (EU) Done")
 print("All Port WG API calls finished")
 
 def sheets():

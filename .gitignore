@@ -9,7 +9,7 @@ __pycache__
 demo-bot.py
 **.ipynb_checkpoints**/**
 key.json
-oath.json
+oauth.json
 key.json.old
 sheets.googleapis.com-python.json
 package.json
